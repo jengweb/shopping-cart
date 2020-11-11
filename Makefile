@@ -25,7 +25,7 @@ code_analysis_backend:
 	cd store-service && go vet ./...
 
 run_unittest_backend:
-	cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | go-junit-report > coverage.xml
+	cd store-service && go test -v ./...
 
 run_integratetest_backend:
 	docker-compose up -d store-database bank-gateway shipping-gateway
