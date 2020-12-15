@@ -23,6 +23,7 @@ pipeline {
           steps {
             script {
               withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+                sh 'export cgo_enabled=0'
                 sh 'go get github.com/jstemmer/go-junit-report'
                 sh 'cd store-service && go vet ./...'
               }
