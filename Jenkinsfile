@@ -35,15 +35,29 @@ pipeline {
         stage('code analysis backend') {
           steps {
             sh 'make run_unittest_backend'
+            junit 'store-service/*.xml'
+            script{
+                def scannerHome = tool 'SonarQubeScanner';
+                withSonarQubeEnv('SonarQubeScanner'){
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
           }
         }
 
       }
     }
 
+    stage('setup test fixtures') {
+      steps {
+        sh 'docker-compose up -d store-database bank-gateway shipping-gateway'
+      }
+    }
+
     stage('run integration test') {
       steps {
-        sh 'make run_integratetest_backend'
+        // sh 'make run_integratetest_backend'
+        sh 'cd store-service && go test -tags=integration ./...'
       }
     }
 
@@ -76,6 +90,7 @@ pipeline {
   }
   post {
     always {
+      robot outputPath: './', passThreshold: 100.0
       sh 'make stop_service'
       sh 'docker volume prune -f'
     }

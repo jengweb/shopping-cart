@@ -3,6 +3,7 @@ ${url}   http://localhost/Product-list
 
 *** Keywords ***
 ดูรายละเอียดสินค้า
+    Wait Until Element Contains    id=productName-1    43 Piece Dinner Set
     Click Element    id=viewMore-1
     
 ตรวจสอบข้อมูลสินค้า 
@@ -55,14 +56,14 @@ ${url}   http://localhost/Product-list
 
 ชำระค่าสินค้า
     [Arguments]    ${cardNumber}    ${expiredMonth}    ${expiredYear}    ${cvv}    ${cardName}    ${totalPrice}
-    Set Selenium Speed     0.1
+    Wait Until Element Is Visible   id=Payment    
     Input Text    id=cardNumber    ${cardNumber} 
     Input Text    id=expiredMonth    ${expiredMonth}
     Input Text    id=expiredYear    ${expiredYear}
     Input Text    id=cvv    ${cvv}
     Input Text    id=cardName    ${cardName}
     Element Text Should Be    id=totalPrice    ${totalPrice}
-     Click Button    id=Payment
+    Click Button    id=Payment
 
 ได้รับการแจ้งเตือน
     Set Selenium Speed     0.5
