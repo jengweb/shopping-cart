@@ -21,10 +21,15 @@ pipeline {
 
         stage('code analysis backend') {
           steps {
-            sh 'cd store-service && go vet ./...'
+            script {
+              withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+                sh 'go get github.com/jstemmer/go-junit-report'
+                sh 'cd store-service && go vet ./...'
+              }
+            }
+            
           }
         }
-
       }
     }
 
