@@ -14,8 +14,3 @@ func (paymentService *mockPaymentService) ConfirmPayment(orderID int, paymentDet
 	argument := paymentService.Called(orderID, paymentDetail)
 	return argument.String(0), argument.Error(1)
 }
-
-func (paymentService *mockPaymentService) ConfirmPayment2(orderID int, paymentDetail payment.PaymentDetail) (string, error) {
-	argument := paymentService.Called(orderID, paymentDetail)
-	return argument.String(0), argument.Error(1)
-}
