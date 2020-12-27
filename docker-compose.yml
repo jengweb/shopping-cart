@@ -57,20 +57,52 @@ services:
     ports:
       - "80:80"
 
+  # bank-gateway:
+  #   image: sckseal/toy-store-bankgateway:0.0.1
+  #   build:
+  #     context: thirdparty/bank-gateway
+  #   container_name: bank-gateway
+  #   restart: always
+  #   ports:
+  #     - "8882:8882"
+
+  # shipping-gateway:
+  #   image: sckseal/toy-store-shippinggateway:0.0.1
+  #   build:
+  #     context: thirdparty/shipping-gateway
+  #   container_name: shipping-gateway
+  #   restart: always
+  #   ports:
+  #     - "8883:8882"
+
   bank-gateway:
-    image: sckseal/toy-store-bankgateway:0.0.1
-    build:
-      context: thirdparty/bank-gateway
+    image: andyrbell/mountebank:2.3.2
     container_name: bank-gateway
-    restart: always
+    volumes:
+      - ./thirdparty/bank-gateway/imposters.json:/imposters/imposters.json
+    command:
+      [
+        "mb",
+        "start",
+        "--configfile",
+        "/imposters/imposters.json",
+        "--allowInjection",
+      ]
     ports:
       - "8882:8882"
 
   shipping-gateway:
-    image: sckseal/toy-store-shippinggateway:0.0.1
-    build:
-      context: thirdparty/shipping-gateway
+    image: andyrbell/mountebank:2.3.2
     container_name: shipping-gateway
-    restart: always
+    volumes:
+      - ./thirdparty/shipping-gateway/imposters.json:/imposters/imposters.json
+    command:
+      [
+        "mb",
+        "start",
+        "--configfile",
+        "/imposters/imposters.json",
+        "--allowInjection",
+      ]
     ports:
       - "8883:8882"

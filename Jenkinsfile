@@ -91,10 +91,11 @@ pipeline {
 
     stage('run ATDD') {
       steps {
-        sh 'make start_service'
-        sh 'make run_newman'
-        sh 'make run_robot'
-        sh 'make stop_service'
+        sh 'docker-compose up -d'
+        sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
+        sh 'curl http://localhost:8000/mockTime/01032020T13:30:00'
+        sh 'robot atdd'
+        sh 'docker-compose down -v'
       }
     }
 
@@ -102,7 +103,7 @@ pipeline {
   post {
     always {
       robot outputPath: './', passThreshold: 100.0
-      sh 'make stop_service'
+      sh 'docker-compose down -v'
       sh 'docker volume prune -f'
     }
 
