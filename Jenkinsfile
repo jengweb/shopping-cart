@@ -3,10 +3,10 @@ pipeline {
     environment {
         root = tool name: 'Go1.15.6', type: 'go'
     }
-    tools {nodejs "NodeJS15.4.0"}
   stages {
     stage('install dependency') {
       steps {
+        tools {nodejs "NodeJS15.4.0"}
         sh 'cd store-web && npm install'
       }
     }
@@ -15,6 +15,7 @@ pipeline {
       parallel {
         stage('code analysis frontend') {
           steps {
+            tools {nodejs "NodeJS15.4.0"}
             sh 'cd store-web && npm run lint'
           }
         }
@@ -36,6 +37,7 @@ pipeline {
       parallel {
         stage('code analysis frontend') {
           steps {
+            tools {nodejs "NodeJS15.4.0"}
             sh 'cd store-web && npm test'
           }
         }
@@ -92,8 +94,9 @@ pipeline {
     stage('run ATDD') {
       steps {
         sh 'docker-compose up -d'
-        sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
+        sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
         sh 'curl http://localhost:8000/mockTime/01032020T13:30:00'
+        sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
         sh 'python -m robot atdd'
         sh 'docker-compose down -v'
       }
