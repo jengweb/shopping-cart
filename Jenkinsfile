@@ -65,7 +65,7 @@ pipeline {
 
     stage('run integration test') {
       steps {
-        sh 'sleep 45'
+        sh 'sleep 35'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
         sh 'cd store-service && go test -tags=integration ./...'
       }
