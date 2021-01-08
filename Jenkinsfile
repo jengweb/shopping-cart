@@ -2,11 +2,11 @@ pipeline {
   agent any
     environment {
         root = tool name: 'Go1.15.6', type: 'go'
+        tools {nodejs "NodeJS15.4.0"}
     }
   stages {
     stage('install dependency') {
       steps {
-        tools {nodejs "NodeJS15.4.0"}
         sh 'cd store-web && npm install'
       }
     }
@@ -15,7 +15,6 @@ pipeline {
       parallel {
         stage('code analysis frontend') {
           steps {
-            tools {nodejs "NodeJS15.4.0"}
             sh 'cd store-web && npm run lint'
           }
         }
@@ -37,7 +36,6 @@ pipeline {
       parallel {
         stage('code analysis frontend') {
           steps {
-            tools {nodejs "NodeJS15.4.0"}
             sh 'cd store-web && npm test'
           }
         }
