@@ -2,10 +2,10 @@ pipeline {
   agent any
     environment {
         root = tool name: 'Go1.15.6', type: 'go'
-        tools {nodejs "NodeJS15.4.0"}
     }
   stages {
     stage('install dependency') {
+      tools {nodejs "NodeJS15.4.0"}
       steps {
         sh 'cd store-web && npm install'
       }
