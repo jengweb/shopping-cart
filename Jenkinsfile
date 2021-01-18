@@ -69,7 +69,12 @@ pipeline {
       steps {
         sh 'sleep 35'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
-        sh 'cd store-service && go test -tags=integration ./...'
+        script{
+          def root = tool type: 'go', name: 'Go1.15.6'
+          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+            sh 'cd store-service && go test -tags=integration ./...'
+          }
+        }
       }
     }
 
