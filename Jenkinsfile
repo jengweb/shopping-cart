@@ -5,13 +5,6 @@ pipeline {
     // }
   stages {
     stage('install dependency') {
-      // Ensure the desired Go version is installed
-      def root = tool type: 'go', name: 'Go1.15.6'
-      // Export environment variables pointing to the directory where Go was installed
-      withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-          sh 'go version'
-      }
-
       tools {nodejs "NodeJS15.4.0"}
       steps {
         sh 'cd store-web && npm install'
@@ -29,6 +22,7 @@ pipeline {
         stage('code analysis backend') {
           steps {
             script {
+              def root = tool type: 'go', name: 'Go1.15.6'
               withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
                 sh 'cd store-service && go vet ./...'
               }
@@ -49,8 +43,8 @@ pipeline {
         stage('code analysis backend') {
           steps {
             script{
+              def root = tool type: 'go', name: 'Go1.15.6'
               withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
-                sh 'go env'
                 sh 'go get github.com/jstemmer/go-junit-report'
                 sh 'cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | go-junit-report > coverage.xml'
                 junit 'store-service/*.xml'
