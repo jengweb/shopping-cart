@@ -43,7 +43,7 @@ pipeline {
           steps {
             script{
               withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
-                sh 'cd store-service && go get github.com/jstemmer/go-junit-report'
+                sh 'go get github.com/jstemmer/go-junit-report'
                 sh 'cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | go-junit-report > coverage.xml'
                 junit 'store-service/*.xml'
               }
