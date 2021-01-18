@@ -1,17 +1,17 @@
 pipeline {
   agent any
-    // Ensure the desired Go version is installed
-    def root = tool type: 'go', name: 'Go1.15.6'
-
-    // Export environment variables pointing to the directory where Go was installed
-    withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
-        sh 'go version'
-    }
     // environment {
     //     root = tool name: 'Go1.15.6', type: 'go'
     // }
   stages {
     stage('install dependency') {
+      // Ensure the desired Go version is installed
+      def root = tool type: 'go', name: 'Go 1.15'
+      // Export environment variables pointing to the directory where Go was installed
+      withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]) {
+          sh 'go version'
+      }
+
       tools {nodejs "NodeJS15.4.0"}
       steps {
         sh 'cd store-web && npm install'
