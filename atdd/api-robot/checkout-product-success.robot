@@ -82,7 +82,7 @@ Get Product Detail
 Order Product
     [Arguments]     ${quantity}    ${shipping_method}    ${total_price}
     ${message}=     Replace Variables    ${ORDER_TEMPLATE}
-    ${order}=    To json    ${message}
+    ${order}=    ${resp.json()}    ${message}
     ${orderStatus}=     POST On Session    ${toy_store}    /api/v1/order    json=${order}    headers=&{POST_HEADERS}
     Status Should Be    200    ${orderStatus}
     Should Be Equal As Strings    ${orderStatus.json()["total_price"]}   ${total_price}
@@ -92,7 +92,7 @@ Confirm Payment
     [Arguments]     ${total_price}     ${notify_message}
     ${notify_message}=     Replace Variables    ${notify_message}
     ${message}=     Replace Variables    ${CONFIRM_PAYMENT_TEMPLATE}
-    ${confirmPayment}=    To Json    ${message}
+    ${confirmPayment}=    ${resp.json()}    ${message}
     ${confirmPaymentStatus}=     POST On Session    ${toy_store}    /api/v1/confirmPayment    json=${confirmPayment}    headers=&{POST_HEADERS}
     Request Should Be Successful    ${confirmPaymentStatus}
     Should Be Equal As Strings    ${confirmPaymentStatus.json()["notify_message"]}    ${notify_message}
