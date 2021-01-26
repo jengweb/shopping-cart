@@ -78,22 +78,22 @@ pipeline {
       }
     }
 
-    // stage('build') {
-    //   parallel {
-    //     stage('build frontend') {
-    //       steps {
-    //         sh 'make build_frontend'
-    //       }
-    //     }
+    stage('build') {
+      parallel {
+        stage('build frontend') {
+          steps {
+            sh 'make build_frontend'
+          }
+        }
 
-    //     stage('build backend') {
-    //       steps {
-    //         sh 'make build_backend'
-    //       }
-    //     }
+        stage('build backend') {
+          steps {
+            sh 'make build_backend'
+          }
+        }
 
-    //   }
-    // }
+      }
+    }
 
     stage('run ATDD') {
       steps {
