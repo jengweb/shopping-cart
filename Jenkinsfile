@@ -3,9 +3,9 @@ pipeline {
     // environment {
     //     root = tool name: 'Go1.15.6', type: 'go'
     // }
+  tools {nodejs "NodeJS15.4.0"}
   stages {
-    stage('install dependency') {
-      tools {nodejs "NodeJS15.4.0"}
+    stage('install dependency frontend') {
       steps {
         sh 'cd store-web && npm install'
       }
