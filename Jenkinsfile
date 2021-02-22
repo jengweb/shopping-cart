@@ -3,9 +3,9 @@ pipeline {
     // environment {
     //     root = tool name: 'Go1.15.6', type: 'go'
     // }
-  tools {nodejs "NodeJS15.4.0"}
   stages {
-    stage('install dependency frontend') {
+    stage('install dependency') {
+      tools {nodejs "NodeJS15.4.0"}
       steps {
         sh 'cd store-web && npm install'
       }
@@ -14,6 +14,7 @@ pipeline {
     stage('code analysis') {
       parallel {
         stage('code analysis frontend') {
+          tools {nodejs "NodeJS15.4.0"}
           steps {
             sh 'cd store-web && npm run lint'
           }
@@ -35,6 +36,7 @@ pipeline {
     stage('run unit test') {
       parallel {
         stage('code analysis frontend') {
+          tools {nodejs "NodeJS15.4.0"}
           steps {
             sh 'cd store-web && npm test'
           }
@@ -46,7 +48,7 @@ pipeline {
               def root = tool type: 'go', name: 'Go1.15.6'
               withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
                 sh 'go get github.com/jstemmer/go-junit-report'
-                sh "cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | /var/lib/jenkins/go/bin/go-junit-report > coverage.xml"
+                sh 'cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | /var/lib/jenkins/go/bin/go-junit-report > coverage.xml'
                 junit 'store-service/*.xml'
               }
               def scannerHome = tool 'SonarQubeScanner';
