@@ -22,10 +22,11 @@ pipeline {
         stage('code analysis backend') {
           steps {
             script {
-              // def root = tool type: 'go', name: 'Go1.15.6'
-              // withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
-              sh 'cd store-service && go vet ./...'
-              // }
+              def root = tool type: 'go', name: 'Go1.15.6'
+              withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+                sh 'go get github.com/jstemmer/go-junit-report'
+                sh 'cd store-service && go vet ./...'
+              }
             }
           }
         }
@@ -43,13 +44,11 @@ pipeline {
         stage('code analysis backend') {
           steps {
             script{
-              // def root = tool type: 'go', name: 'Go1.15.6'
-              // withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
-              sh 'go env'
-              sh 'go get github.com/jstemmer/go-junit-report'
-              sh 'cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | go-junit-report > coverage.xml'
-              junit 'store-service/*.xml'
-              // }
+              def root = tool type: 'go', name: 'Go1.15.6'
+              withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+                sh 'cd store-service && go test -v -coverprofile=coverage.out ./... 2>&1 | go-junit-report > coverage.xml'
+                junit 'store-service/*.xml'
+              }
               def scannerHome = tool 'SonarQubeScanner';
               withSonarQubeEnv('SonarQubeScanner'){
                 sh "${scannerHome}/bin/sonar-scanner"
@@ -71,10 +70,10 @@ pipeline {
         sh 'sleep 35'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
         script{
-          // def root = tool type: 'go', name: 'Go1.15.6'
-          // withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
-          sh 'cd store-service && go test -tags=integration ./...'
-          // }
+          def root = tool type: 'go', name: 'Go1.15.6'
+          withEnv(["GOROOT=${root}", "PATH+GO=${root}/bin"]){
+            sh 'cd store-service && go test -tags=integration ./...'
+          }
         }
       }
     }
