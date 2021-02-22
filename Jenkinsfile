@@ -82,13 +82,13 @@ pipeline {
       parallel {
         stage('build frontend') {
           steps {
-            sh 'make build_frontend'
+            sh 'docker-compose build store-web'
           }
         }
 
         stage('build backend') {
           steps {
-            sh 'make build_backend'
+            sh 'docker-compose build store-service'
           }
         }
 
