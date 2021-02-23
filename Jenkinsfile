@@ -69,7 +69,7 @@ pipeline {
 
     stage('run integration test') {
       steps {
-        sh 'sleep 35'
+        sh 'sleep 20'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
         script{
           def root = tool type: 'go', name: 'Go1.15.6'
