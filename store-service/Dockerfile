@@ -12,4 +12,6 @@ RUN apk --no-cache add ca-certificates && \
     apk del tzdata
 WORKDIR /root/
 COPY --from=builder /module/app .
+ENV GIN_MODE release
+EXPOSE 8000
 CMD ["./app"]
