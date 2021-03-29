@@ -4,7 +4,7 @@ import { Button, Card, Col, Row } from "react-bootstrap";
 
 function ProductCard({ item }) {
   const card = item.map(
-    ({ productImage, productName, getProductDetail, productPrice }, index) => {
+    ({ product_image, product_name, getProductDetail, product_price }, index) => {
       const key = index + 1;
       return (
         <Col xs={4} key={key}>
@@ -12,13 +12,13 @@ function ProductCard({ item }) {
             <Card.Body>
               <div className="card-img">
                 <img
-                  src={productImage}
+                  src={product_image}
                   className="card-img"
                   id={`productImage-${key}`}
                 />
               </div>
-              <h5 id={`productName-${key}`}>{productName}</h5>
-              <p id={`productPrice-${key}`}>{productPrice}</p>
+              <h5 id={`productName-${key}`}>{product_name}</h5>
+              <p id={`productPrice-${key}`}>{product_price}</p>
               <Button
                 id={`viewMore-${key}`}
                 variant="primary"
@@ -37,9 +37,9 @@ function ProductCard({ item }) {
 }
 ProductCard.propTypes = {
   item: {
-    productImage: PropTypes.string,
-    productName: PropTypes.string,
-    productPrice: PropTypes.string,
+    product_image: PropTypes.string,
+    product_name: PropTypes.string,
+    product_price: PropTypes.string,
     getProductDetail: PropTypes.func,
   },
 };
