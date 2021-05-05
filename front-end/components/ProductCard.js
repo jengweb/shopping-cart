@@ -1,10 +1,15 @@
 import React from "react";
+import Route from 'next/router'
 import PropTypes from "prop-types";
 import { Button, Card, Col, Row } from "react-bootstrap";
 
 function ProductCard({ item }) {
+  const getProductDetail = (e) => {
+    e.preventDefault()
+    Route.push("/Product-detail");
+  }
   const card = item.map(
-    ({ product_image, product_name, getProductDetail, product_price }, index) => {
+    ({ product_image, product_name, product_price }, index) => {
       const key = index + 1;
       return (
         <Col xs={4} key={key}>
@@ -32,15 +37,14 @@ function ProductCard({ item }) {
       );
     }
   );
-
   return <Row>{card}</Row>;
 }
+
 ProductCard.propTypes = {
   item: {
     product_image: PropTypes.string,
     product_name: PropTypes.string,
     product_price: PropTypes.string,
-    getProductDetail: PropTypes.func,
   },
 };
 

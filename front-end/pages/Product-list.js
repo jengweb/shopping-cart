@@ -1,13 +1,8 @@
 import React from "react";
 import { Container, Form, Row, Col, Button, CardDeck } from "react-bootstrap";
-import Route from "next/router";
 import ProductCard from "../components/ProductCard";
 
 export default class ProductList extends React.Component {
-  getProductDetail() {
-    Route.push("/Product-detail");
-  }
-
   constructor(props) {
     super(props);
     this.state = {

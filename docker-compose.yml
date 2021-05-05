@@ -1,8 +1,9 @@
-version: "3.5"
+version: "3.9"
 
 services:
   store-service:
-    image: sckseal/toy-store-service:0.0.3
+    # image: sckseal/toy-store-service:0.0.3
+    image: jengweb/toy-store-service:1.0.0
     container_name: store-service
     build:
       context: store-service
@@ -14,8 +15,8 @@ services:
     environment:
       - TEST_MODE=true
       - CACHE_ON=true
-      # - ELASTIC_APM_SERVER_URL=http://host.docker.internal:8200
-      - ELASTIC_APM_SERVER_URL=http://54.254.108.7:38200
+      - ELASTIC_APM_SERVER_URL=http://host.docker.internal:8200
+      # - ELASTIC_APM_SERVER_URL=http://54.254.108.7:38200
       - ELASTIC_APM_SERVICE_NAME=shopping-cart-local
 
   store-cache:
@@ -25,6 +26,7 @@ services:
       - "6379:6379"
 
   store-database:
+    # image: mysql:8.0.22
     image: mariadb:10.4.17
     container_name: store-database
     environment:
@@ -39,15 +41,17 @@ services:
 
   store-web:
     #image: sckseal/toy-store-web:0.0.1
-    image: toy-store-web:0.0.1
+    # image: toy-store-web:0.0.1
+    image: jengweb/toy-store-web:1.0.0
     container_name: store-web
     build:
       context: front-end
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
 
   store-nginx:
-    image: sckseal/toy-store-nginx:0.0.2
+    # image: sckseal/toy-store-nginx:0.0.2
+    image: jengweb/toy-store-nginx:1.0.0
     container_name: store-nginx
     restart: always
     build:
@@ -58,52 +62,22 @@ services:
     ports:
       - "80:80"
 
-  # bank-gateway:
-  #   image: sckseal/toy-store-bankgateway:0.0.1
-  #   build:
-  #     context: thirdparty/bank-gateway
-  #   container_name: bank-gateway
-  #   restart: always
-  #   ports:
-  #     - "8882:8882"
-
-  # shipping-gateway:
-  #   image: sckseal/toy-store-shippinggateway:0.0.1
-  #   build:
-  #     context: thirdparty/shipping-gateway
-  #   container_name: shipping-gateway
-  #   restart: always
-  #   ports:
-  #     - "8883:8882"
-
   bank-gateway:
-    image: andyrbell/mountebank:2.3.2
+    # image: sckseal/toy-store-bankgateway:0.0.1
+    image: jengweb/toy-store-bankgateway:1.0.0
+    build:
+      context: thirdparty/bank-gateway
     container_name: bank-gateway
-    volumes:
-      - ./thirdparty/bank-gateway/imposters.json:/imposters/imposters.json
-    command:
-      [
-        "mb",
-        "start",
-        "--configfile",
-        "/imposters/imposters.json",
-        "--allowInjection",
-      ]
+    restart: always
     ports:
       - "8882:8882"
 
   shipping-gateway:
-    image: andyrbell/mountebank:2.3.2
+    # image: sckseal/toy-store-shippinggateway:0.0.1
+    image: jengweb/toy-store-shippinggateway:1.0.0
+    build:
+      context: thirdparty/shipping-gateway
     container_name: shipping-gateway
-    volumes:
-      - ./thirdparty/shipping-gateway/imposters.json:/imposters/imposters.json
-    command:
-      [
-        "mb",
-        "start",
-        "--configfile",
-        "/imposters/imposters.json",
-        "--allowInjection",
-      ]
+    restart: always
     ports:
       - "8883:8882"
