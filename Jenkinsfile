@@ -4,23 +4,23 @@ pipeline {
     //     root = tool name: 'Go1.15.6', type: 'go'
     // }
   stages {
-    stage('install dependency') {
+    stage('Install Dependency') {
       tools {nodejs "NodeJS15.4.0"}
       steps {
         sh 'cd store-web && npm install'
       }
     }
 
-    stage('code analysis') {
+    stage('Code Analysis') {
       parallel {
-        stage('code analysis frontend') {
+        stage('Frontend') {
           tools {nodejs "NodeJS15.4.0"}
           steps {
             sh 'cd store-web && npm run lint'
           }
         }
 
-        stage('code analysis backend') {
+        stage('Backend') {
           steps {
             script {
               def root = tool type: 'go', name: 'Go1.15.6'
@@ -33,16 +33,16 @@ pipeline {
       }
     }
 
-    stage('run unit test') {
+    stage('Run Unit Test') {
       parallel {
-        stage('code analysis frontend') {
+        stage('Frontend') {
           tools {nodejs "NodeJS15.4.0"}
           steps {
             sh 'cd store-web && npm test'
           }
         }
 
-        stage('code analysis backend') {
+        stage('Backend') {
           steps {
             script{
               def root = tool type: 'go', name: 'Go1.15.6'
@@ -61,13 +61,13 @@ pipeline {
       }
     }
 
-    stage('setup test fixtures') {
+    stage('Setup Test Fixtures') {
       steps {
         sh 'docker-compose up -d store-database bank-gateway shipping-gateway'
       }
     }
 
-    stage('run integration test') {
+    stage('Run Integration Test') {
       steps {
         sh 'sleep 20'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
@@ -80,15 +80,15 @@ pipeline {
       }
     }
 
-    stage('build') {
+    stage('Build Docker Images') {
       parallel {
-        stage('build frontend') {
+        stage('Build Frontend') {
           steps {
             sh 'docker-compose build store-web'
           }
         }
 
-        stage('build backend') {
+        stage('Build Backend') {
           steps {
             sh 'docker-compose build store-service'
           }
@@ -97,7 +97,7 @@ pipeline {
       }
     }
 
-    stage('run ATDD') {
+    stage('Run ATDD') {
       steps {
         sh 'docker-compose up -d'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
@@ -107,7 +107,7 @@ pipeline {
       }
     }
 
-    stage('run Performance Testing') {
+    stage('Run Performance Testing') {
       steps {
         sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js  --out influxdb=http://54.254.108.7:38086/k6'
         // sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js'
