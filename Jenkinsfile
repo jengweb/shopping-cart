@@ -104,7 +104,6 @@ pipeline {
         sh 'curl http://localhost:8000/mockTime/01032020T13:30:00'
         sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
         sh 'python3 -m robot atdd'
-        sh 'docker-compose down -v'
       }
     }
 
