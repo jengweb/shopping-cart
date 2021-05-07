@@ -33,7 +33,7 @@ pipeline {
       }
     }
 
-    stage('Run Unit Test') {
+    stage('Run Unit Testing') {
       parallel {
         stage('Frontend') {
           tools {nodejs "NodeJS15.4.0"}
@@ -67,7 +67,7 @@ pipeline {
       }
     }
 
-    stage('Run Integration Test') {
+    stage('Run Integration Testing') {
       steps {
         sh 'sleep 20'
         sh 'cat tearup/init.sql | docker exec -i store-database /usr/bin/mysql -u sealteam --password=sckshuhari --default-character-set=utf8  toy'
