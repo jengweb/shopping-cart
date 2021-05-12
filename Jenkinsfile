@@ -117,11 +117,13 @@ pipeline {
         stage('API Testing by Robot-RequestsLibrary') {
           steps {
             sh 'python3 -m robot atdd/api-robot'
+            robot outputPath: './', passThreshold: 100.0
           }
         }
         stage('UI Testing') {
           steps {
             sh 'python3 -m robot atdd/ui'
+            robot outputPath: './', passThreshold: 100.0
           }
         }
       }
@@ -129,17 +131,16 @@ pipeline {
 
     stage('Run Performance Testing') {
       steps {
-        sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js  --out influxdb=http://54.254.108.7:38086/k6'
-        // sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js'
+        // sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js  --out influxdb=http://54.254.108.7:38086/k6'
+        sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js'
       }
     }
   }
   post {
     always {
-      robot outputPath: './', passThreshold: 100.0
+      // robot outputPath: './', passThreshold: 100.0
       sh 'docker-compose down -v'
-      sh 'docker volume prune -f'
+      // sh 'docker volume prune -f'
     }
-
   }
 }
