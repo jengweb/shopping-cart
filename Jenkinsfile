@@ -114,16 +114,9 @@ pipeline {
             sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
           }
         }
-        stage('API Testing by Robot-RequestsLibrary') {
+        stage('UI Testing and API Testing by Robot') {
           steps {
-            sh 'cd atdd/api-robot && python3 -m robot .'
-            robot outputPath: './', passThreshold: 100.0
-          }
-        }
-        stage('UI Testing') {
-          steps {
-            sh 'cd atdd/ui &&  python3 -m robot .'
-            robot outputPath: './', passThreshold: 100.0
+            sh 'python3 -m robot atdd'
           }
         }
       }
@@ -138,8 +131,7 @@ pipeline {
   }
   post {
     always {
-      // robot outputPath: './atdd/api-robot', passThreshold: 100.0
-      // robot outputPath: './atdd/ui', passThreshold: 100.0
+      robot outputPath: './', passThreshold: 100.0
       sh 'docker-compose down -v'
       // sh 'docker volume prune -f'
     }
