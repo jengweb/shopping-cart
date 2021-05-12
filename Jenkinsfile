@@ -114,7 +114,7 @@ pipeline {
             sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
           }
         }
-        stage('API Testing by Robot-Framework-RequestsLibrary') {
+        stage('API Testing by Robot-RequestsLibrary') {
           steps {
             sh 'python3 -m robot atdd/api-robot'
           }
