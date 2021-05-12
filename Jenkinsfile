@@ -109,11 +109,6 @@ pipeline {
 
     stage('Run ATDD') {
       parallel {
-        stage('UI Testing') {
-          steps {
-            sh 'python3 -m robot atdd/ui'
-          }
-        }
         stage('API Testing by Newman') {
           steps {
             sh 'newman run atdd/api/shopping_cart_success.json -e atdd/api/environment/local_environment.json -d atdd/api/data/shopping_cart_success.json'
@@ -122,6 +117,11 @@ pipeline {
         stage('API Testing by Robot-Framework-RequestsLibrary') {
           steps {
             sh 'python3 -m robot atdd/api-robot'
+          }
+        }
+        stage('UI Testing') {
+          steps {
+            sh 'python3 -m robot atdd/ui'
           }
         }
       }
