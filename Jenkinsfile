@@ -117,11 +117,13 @@ pipeline {
         stage('API Testing by Robot-RequestsLibrary') {
           steps {
             sh 'cd atdd/api-robot && python3 -m robot .'
+            robot outputPath: './', passThreshold: 100.0
           }
         }
         stage('UI Testing') {
           steps {
             sh 'cd atdd/ui &&  python3 -m robot .'
+            robot outputPath: './', passThreshold: 100.0
           }
         }
       }
@@ -136,8 +138,8 @@ pipeline {
   }
   post {
     always {
-      robot outputPath: './atdd/api-robot', passThreshold: 100.0
-      robot outputPath: './atdd/ui', passThreshold: 100.0
+      // robot outputPath: './atdd/api-robot', passThreshold: 100.0
+      // robot outputPath: './atdd/ui', passThreshold: 100.0
       sh 'docker-compose down -v'
       // sh 'docker volume prune -f'
     }
