@@ -291,3 +291,61 @@ func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_Sh
 	assert.Equal(t, expectedMessage, actualMessage)
 	assert.Equal(t, errors.New("ShipByKerry Error"), err)
 }
+
+func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_UpdateOrder_Return_Error(t *testing.T) {
+	expectedMessage := ""
+
+	orderId := 8004359103
+	paymentDetail := payment.PaymentDetail{
+		CardNumber:   "4719700591590995",
+		CVV:          "752",
+		ExpiredMonth: 7,
+		ExpiredYear:  20,
+		CardName:     "Karnwat Wongudom",
+		TotalPrice:   104.95,
+		MerchantID:   154124000,
+	}
+	shippingInfo := order.ShippingInfo{
+		ShippingMethod:       "Kerry",
+		ShippingAddress:      "405/35 ถ.มหิดล",
+		ShippingSubDistrict:  "ท่าศาลา",
+		ShippingDistrict:     "เมือง",
+		ShippingProvince:     "เชียงใหม่",
+		ShippingZipCode:      "50000",
+		RecipientName:        "ณัฐญา ชุติบุตร",
+		RecipientPhoneNumber: "0970804292",
+	}
+
+	mockBankGateway := new(mockBankGateway)
+	mockBankGateway.On("Payment", paymentDetail).Return("TOY202002021525", nil)
+
+	mockOrderRepository := new(mockOrderRepository)
+	mockOrderRepository.On("GetOrderProduct", orderId).Return([]order.OrderProduct{
+		{
+			ProductID: 2,
+			Quantity:  1,
+		},
+	}, nil)
+	mockOrderRepository.On("UpdateOrder", orderId, "TOY202002021525").Return(errors.New("UpdateOrder Error"))
+
+	mockProductRepository := new(mockProductRepository)
+	mockProductRepository.On("UpdateStock", 2, 1).Return(nil)
+
+	mockShippingRepository := new(mockShippingRepository)
+	mockShippingRepository.On("GetShippingByOrderID", orderId).Return(shippingInfo, nil)
+
+	mockShippingGateway := new(mockShippingGateway)
+	mockShippingGateway.On("ShipByKerry", shippingInfo).Return("", nil)
+
+	paymentService := payment.PaymentService{
+		BankGateway:        mockBankGateway,
+		OrderRepository:    mockOrderRepository,
+		ProductRepository:  mockProductRepository,
+		ShippingRepository: mockShippingRepository,
+		ShippingGateway:    mockShippingGateway,
+	}
+
+	actualMessage, err := paymentService.ConfirmPayment(orderId, paymentDetail)
+	assert.Equal(t, expectedMessage, actualMessage)
+	assert.Equal(t, errors.New("UpdateOrder Error"), err)
+}
