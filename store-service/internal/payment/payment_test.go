@@ -143,7 +143,7 @@ func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_Ge
 	assert.Equal(t, errors.New("GetOrderProduct Error"), err)
 }
 
-func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_UpdateStock_Return_Errors(t *testing.T) {
+func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_UpdateStock_Return_Error(t *testing.T) {
 	expectedMessage := ""
 
 	orderId := 8004359103
@@ -180,4 +180,57 @@ func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_Up
 	actualMessage, err := paymentService.ConfirmPayment(orderId, paymentDetail)
 	assert.Equal(t, expectedMessage, actualMessage)
 	assert.Equal(t, errors.New("UpdateStock Error"), err)
+}
+
+func Test_ConfirmPayment_Input_OrderID_8004359103_And_PaymentDetail_Should_Be_GetShippingByOrderID_Return_Error(t *testing.T) {
+	expectedMessage := ""
+
+	orderId := 8004359103
+	paymentDetail := payment.PaymentDetail{
+		CardNumber:   "4719700591590995",
+		CVV:          "752",
+		ExpiredMonth: 7,
+		ExpiredYear:  20,
+		CardName:     "Karnwat Wongudom",
+		TotalPrice:   104.95,
+		MerchantID:   154124000,
+	}
+	shippingInfo := order.ShippingInfo{
+		ShippingMethod:       "Kerry",
+		ShippingAddress:      "405/35 ถ.มหิดล",
+		ShippingSubDistrict:  "ท่าศาลา",
+		ShippingDistrict:     "เมือง",
+		ShippingProvince:     "เชียงใหม่",
+		ShippingZipCode:      "50000",
+		RecipientName:        "ณัฐญา ชุติบุตร",
+		RecipientPhoneNumber: "0970804292",
+	}
+
+	mockBankGateway := new(mockBankGateway)
+	mockBankGateway.On("Payment", paymentDetail).Return("TOY202002021525", nil)
+
+	mockOrderRepository := new(mockOrderRepository)
+	mockOrderRepository.On("GetOrderProduct", orderId).Return([]order.OrderProduct{
+		{
+			ProductID: 2,
+			Quantity:  1,
+		},
+	}, nil)
+
+	mockProductRepository := new(mockProductRepository)
+	mockProductRepository.On("UpdateStock", 2, 1).Return(nil)
+
+	mockShippingRepository := new(mockShippingRepository)
+	mockShippingRepository.On("GetShippingByOrderID", orderId).Return(shippingInfo, errors.New("GetShippingByOrderID Error"))
+
+	paymentService := payment.PaymentService{
+		BankGateway:        mockBankGateway,
+		OrderRepository:    mockOrderRepository,
+		ProductRepository:  mockProductRepository,
+		ShippingRepository: mockShippingRepository,
+	}
+
+	actualMessage, err := paymentService.ConfirmPayment(orderId, paymentDetail)
+	assert.Equal(t, expectedMessage, actualMessage)
+	assert.Equal(t, errors.New("GetShippingByOrderID Error"), err)
 }
