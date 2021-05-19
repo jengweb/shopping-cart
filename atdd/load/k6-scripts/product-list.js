@@ -3,13 +3,13 @@ import { check, sleep } from "k6";
 
 export let options = {
   stages: [
-    // Ramp-up from 1 to 5 virtual users (VUs) in 5s
+    // Ramp-up from 1 to 20 virtual users (VUs) in 30s
     { duration: "30s", target: 20 },
 
-    // Stay at rest on 5 VUs for 10s
+    // Stay at rest on 20 VUs for 30s
     { duration: "30s", target: 20 },
 
-    // Ramp-down from 5 to 0 VUs for 5s
+    // Ramp-down from 20 to 0 VUs for 10s
     { duration: "10s", target: 0 },
   ],
 };
@@ -19,5 +19,10 @@ export default function () {
     headers: { Accepts: "application/json" },
   });
   check(response, { "status is 200": (r) => r.status === 200 });
-  sleep(0.3);
+  check(response, { "Total is 10031": (r) => (r.json()["total"] = 10031) });
+  check(response, {
+    "Product ID 2 is 43 Piece dinner Set": (r) =>
+      (r.json()["products"][1]["product_name"] = "43 Piece dinner Set"),
+  });
+  // sleep(0.3);
 }
