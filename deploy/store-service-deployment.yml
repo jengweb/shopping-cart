@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+metadata:
   name: store-service
-spec: 
+spec:
   replicas: 1
   selector:
     matchLabels:
       app: store-service
   template:
-    metadata: 
-      labels: 
+    metadata:
+      labels:
         app: store-service
     spec:
       restartPolicy: Always
       containers:
-      - image: sckseal/toy-store-service:0.0.1
-        name:  store-service
-        ports:
-        - containerPort: 8000
-        env:
-        - name: TEST_MODE
-          value: "true"
-      
+        # - image: sckseal/toy-store-service:0.0.1
+        - image: jengweb/toy-store-service:1.0.0
+          name: store-service
+          ports:
+            - containerPort: 8000
+          env:
+            - name: TEST_MODE
+              value: "true"

@@ -16,20 +16,27 @@ spec:
         app: store-database-deployment
     spec:
       containers:
-      - image: mysql:5.7
-        name: store-database-deployment
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          value: root
-        - name: MYSQL_USER
-          value: sealteam
-        - name: MYSQL_PASSWORD
-          value: sckshuhari
-        - name: MYSQL_DATABASE
-          value: toy
-        livenessProbe:
-          tcpSocket:
-            port: 3306
-        ports:
-        - containerPort: 3306
-
+        # - image: mysql:5.7
+        - image: mariadb:10.4.17
+          name: store-database-deployment
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: root
+            - name: MYSQL_USER
+              value: sealteam
+            - name: MYSQL_PASSWORD
+              value: sckshuhari
+            - name: MYSQL_DATABASE
+              value: toy
+          volumeMounts:
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+          livenessProbe:
+            tcpSocket:
+              port: 3306
+          ports:
+            - containerPort: 3306
+      volumes:
+        - name: mysql-initdb
+          configMap:
+            name: mysql-initdb-config

@@ -2,33 +2,33 @@ apiVersion: v1
 kind: Service
 metadata:
   name: bank-gateway
-spec: 
+spec:
   type: ClusterIP
   selector:
     app: bank-gateway
-  ports: 
+  ports:
     - protocol: TCP
       port: 8882
       targetPort: 8882
 ---
 apiVersion: apps/v1
 kind: Deployment
-metadata: 
+metadata:
   name: bank-gateway
-spec: 
+spec:
   replicas: 1
   selector:
     matchLabels:
       app: bank-gateway
   template:
-    metadata: 
-      labels: 
+    metadata:
+      labels:
         app: bank-gateway
     spec:
       restartPolicy: Always
       containers:
-      - image: sckseal/toy-store-bankgateway:0.0.1
-        name:  bank-gateway
-        ports:
-        - containerPort: 8882
-        
+        # - image: sckseal/toy-store-bankgateway:0.0.1
+        - image: jengweb/toy-store-bankgateway:1.0.0
+          name: bank-gateway
+          ports:
+            - containerPort: 8882

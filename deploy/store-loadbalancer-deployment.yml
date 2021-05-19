@@ -15,7 +15,8 @@ spec:
         app: store-loadbalancer
     spec:
       containers:
-      - name: store-loadbalancer
-        image: sckseal/toy-store-nginx:0.0.1
-        ports:
-        - containerPort: 80
+        # - image: sckseal/toy-store-nginx:0.0.1
+        - image: jengweb/toy-store-nginx:1.0.0
+          name: store-loadbalancer
+          ports:
+            - containerPort: 80

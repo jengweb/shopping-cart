@@ -15,7 +15,8 @@ spec:
         app: store-web
     spec:
       containers:
-      - name: store-web
-        image: sckseal/toy-store-web:0.0.1
-        ports:
-        - containerPort: 3000
+        # - image: sckseal/toy-store-web:0.0.1
+        - image: jengweb/toy-store-web:1.0.0
+          name: store-web
+          ports:
+            - containerPort: 3000
