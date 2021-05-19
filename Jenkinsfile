@@ -124,8 +124,8 @@ pipeline {
 
     stage('Run Performance Testing') {
       steps {
-        // sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js  --out influxdb=http://54.254.108.7:38086/k6'
-        sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/producct-list.js'
+        // sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/product-list.js  --out influxdb=http://54.254.108.7:38086/k6'
+        sh 'k6 run --summary-trend-stats="avg,min,med,max,p(99),p(95),p(99.9),count" --summary-time-unit=ms -q atdd/load/k6-scripts/product-list.js'
       }
     }
   }
