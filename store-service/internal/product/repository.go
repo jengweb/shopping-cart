@@ -56,7 +56,7 @@ func (repository ProductRepositoryMySQLWithCache) GetProducts(keyword string) (P
 	var products []Product
 
 	value, err := repository.RedisConnection.Get(keyword).Result()
-	log.Printf("keyword %s value %s error %s", keyword, value, err)
+	// log.Printf("keyword %s value %s error %s", keyword, value, err)
 	if err == nil && value != "" {
 		err = json.Unmarshal([]byte(value), &products)
 		return ProductResult{
