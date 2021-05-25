@@ -12,6 +12,12 @@ export let options = {
     // Ramp-down from 20 to 0 VUs for 10s
     { duration: "10s", target: 0 },
   ],
+
+  thresholds: {
+    http_req_duration: ['p(95)<200'],
+    http_req_duration: ['p(99)<300'],
+  },
+  
 };
 
 export default function () {
